@@ -35,5 +35,5 @@ target("LuauExampleApp") --rename this to whatever you like
     set_languages("cxx20") -- cpp20
     add_files("src/**.cpp") -- add all cpp files in directories and subdirectories of src
     -- add useful luau include directories
-    add_includedirs("extern/vendor/luau/Compiler/include", "extern/vendor/luau/Common/include", "extern/vendor/luau/Ast/include", "extern/vendor/luau/VM/include")
+    add_includedirs("extern/vendor/luau/Compiler/include", "extern/vendor/luau/Common/include", "extern/vendor/luau/Ast/include", "extern/vendor/luau/VM/include", "extern/vendor/luau/CodeGen/include")
     add_packages("luau")
