@@ -4,8 +4,24 @@
 #include <string>
 #include <Luau/CodeGen.h>
 #include <Luau/Compiler.h>
-
+#include <iostream>
 // I copy pasted this from a source file of luau and tweaked it , i forgot which one it was lol
+
+
+int iterate_tbl(lua_State* L)
+{
+    std::cout << luaL_typename(L, -1) << std::endl;
+    lua_pushnil(L);  /* first key */
+    while (lua_next(L, -2) != 0) {
+    /* uses 'key' (at index -2) and 'value' (at index -1) */
+    printf("%s - %s\n",
+            lua_typename(L, lua_type(L, -2)),
+            lua_typename(L, lua_type(L, -1)));
+    /* removes 'value'; keeps 'key' for next iteration */
+    lua_pop(L, 1);
+    }
+    return 0;
+}
 
 void SetupState(lua_State *L, bool sandbox_libs = false) {
     luaL_openlibs(L);
@@ -15,6 +31,8 @@ void SetupState(lua_State *L, bool sandbox_libs = false) {
 
 void RegisterFunctions(lua_State *L) {
     // register ur custom funcs here
+    lua_pushcfunction(L, iterate_tbl, "iterate_tbl");
+    lua_setglobal(L, "iterate_tbl");
 }
 
 static Luau::CompileOptions copts()
@@ -119,5 +137,9 @@ std::string executeScript(std::string script, bool sandbox_libs = false) {
 
 void main()
 {
-    executeScript("print('hello world !')");
+    const char* src = R""(
+        local a = {"encode", "me", "please", {"dont", "forget", {"me"}}}
+        iterate_tbl(a)
+    )"";
+    executeScript(src);
 }
